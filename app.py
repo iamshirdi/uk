@@ -44,6 +44,24 @@ def upload():
         return cls(pred_class,outputs)
     return None
 
+@app.route("/api", methods=["POST"])
+def api():
+
+    result=request.form
+    brand_label = result['brand']
+    mileage = result['mileage']
+    mark = result['mark']
+    fiscal_power = result['fiscal_power']
+    fuel_type = result['fuel_type']
+
+    user_input = {'year_model':year_model, 'mileage':mileage, 'fiscal_power':fiscal_power, 'fuel_type':fuel_type, 'mark':mark}
+
+    print(user_input)
+    a = input_to_one_hot(user_input)
+    price_pred = gbr.predict([a])[0]
+    price_pred = round(price_pred, 2)
+    return json.dumps({'price':price_pred});
+    # return render_template('result.html',prediction=price_pred)
 
 if __name__ == '__main__':
 
