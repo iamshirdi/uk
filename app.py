@@ -28,6 +28,9 @@ def cls(pred_class,outputs):
 def index():
     return render_template('index.html')
 
+@app.route('/price', methods=['GET'])
+def price():
+    return render_template('price.html')
 
 @app.route('/predict', methods=['GET', 'POST'])
 def upload():

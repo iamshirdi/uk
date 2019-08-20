@@ -1,0 +1,44 @@
+<html lang="en">
+
+<head>
+
+<
+</head>
+
+
+<body>
+<div style="width:520px;margin:0px auto;margin-top:30px;height:500px;">
+  <h2>Clothes Price Predictor.js</h2>
+
+<form action="{{ url_for('api') }}" method="post">
+
+<p>
+<label> Brand
+        
+
+
+
+<!--        { text: "Girl", value: "Girl" },-->
+
+<select class="myselect1" name="brand">
+  <option value="one">First</option>
+  <option value="two">Second</option>
+  <option value="H&M" selected="selected">H&M</option>
+</select>
+</label> 
+</p>
+
+<p><button>Submit</button></p>
+
+</form>
+
+<script type="text/javascript">
+      $(".myselect1").select2({
+  data: data
+});
+</script>
+
+</div>
+
+</body>
+</html>
