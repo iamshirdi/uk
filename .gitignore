@@ -1,0 +1,10 @@
+#ignore the folder and its contents
+
+__pycache__/
+
+#ignore the folder and its contents
+.ipynb_checkpoints/
+
+
+
+#.gitignore to even ignore this file in git

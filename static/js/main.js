@@ -2,7 +2,12 @@ $(document).ready(function () {
     // Init
     $('.image-section').hide();
     $('.loader').hide();
+	$('.loader2').hide();
     $('#result').hide();
+	$('#result2').hide();
+	$('.image-section2').hide();
+
+
 
     // Upload Preview
     function readURL(input) {
@@ -23,6 +28,16 @@ $(document).ready(function () {
         $('#result').hide();
         readURL(this);
     });
+	
+
+	$("#imageUpload2").change(function () {
+        $('.image-section2').show();
+        $('#btn-predict2').show();
+        $('#result2').text('');
+        $('#result2').hide();
+        readURL(this);
+    });
+	
 
     // Predict
     $('#btn-predict').click(function () {
@@ -50,5 +65,33 @@ $(document).ready(function () {
             },
         });
     });
+	
+	// Predict2
+    $('#btn-predict2').click(function () {
+        var form_data2 = new FormData($('#upload-file2')[0]);
+
+        // Show loading animation
+        $(this).hide();
+        $('.loader2').show();
+
+        // Make prediction by calling api /predict
+        $.ajax({
+            type: 'POST',
+            url: '/predict2',
+            data: form_data2,
+            contentType: false,
+            cache: false,
+            processData: false,
+            async: true,
+            success: function (data) {
+                // Get and display the result
+                $('.loader2').hide();
+                $('#result2').fadeIn(600);
+                $('#result2').text(' Model Predicted : ' + data);
+                console.log('Success!');
+            },
+        });
+    });
+
 
 });

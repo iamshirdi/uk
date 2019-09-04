@@ -7,6 +7,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
+<!--  <script type="text/javascript" src="category.js"></script>,-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/brand.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/size.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/gender.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/category.js') }}"></script>
 
 </head>
 
@@ -18,17 +23,36 @@
 <form action="{{ url_for('api') }}" method="post">
 
 <p>
-<label> Brand
-        
+<label> Category
+<select id="my1" class="myselect1" name="category">
+  <option></option>
+</select>
+</label> 
+</p>
 
 
-
+<p>
+<label> Gender
 <!--        { text: "Girl", value: "Girl" },-->
+<select id="my2" class="myselect2" name="gender">
+<option></option>
+</select>
+</label> 
+</p>
 
-<select class="myselect1" name="brand">
-  <option value="one">First</option>
-  <option value="two">Second</option>
-  <option value="H&M" selected="selected">H&M</option>
+<p>
+<label> Brand
+<select id="my3" class="myselect3" name="brand">
+  <!-- <option value="h&m" selected="selected">H&M </option>,-->
+
+</select>
+</label> 
+</p>
+
+<p>
+<label> Size
+<select id="my4" class="myselect4" name="size">
+<option> </option>
 </select>
 </label> 
 </p>
@@ -37,17 +61,55 @@
 
 </form>
 
-<script>  var data = [       
-            { "value": "pune", "text": "Pune"  },
-            { "value": "mumbai", "text": "Mumbai"  },
-            { "value": "nashik", "text": "Nashik"  }
-          ];
- </script>
- 
+<!--        data: size_data -->
+
 <script type="text/javascript">
-      $(".myselect1").select2({
-  data: data
+
+var elements = ""
+var i;
+for(i= 0; i < category_data.length; i++){
+    elements += "<option value='"+category_data[i].value + "'>" + category_data[i].value + "</option>";
+}
+document.getElementById("my1").innerHTML = elements;
+
+var elements2 = ""
+var i;
+for(i= 0; i < gender_data.length; i++){
+    elements2 += "<option value='"+gender_data[i].value + "'>" + gender_data[i].value + "</option>";
+}
+document.getElementById("my2").innerHTML = elements2;
+
+var elements3 = ""
+var i;
+for(i= 0; i < brand_data.length; i++){
+    elements3 += "<option value='"+brand_data[i].value + "'>" + brand_data[i].value + "</option>";
+}
+document.getElementById("my3").innerHTML = elements3;
+
+var elements4 = ""
+var i;
+for(i= 0; i < size_data.length; i++){
+    elements4 += "<option value='"+size_data[i].value + "'>" + size_data[i].value + "</option>";
+}
+document.getElementById("my4").innerHTML = elements4;
+
+
+    
+	$(".myselect1").select2({
 });
+
+
+      $(".myselect2").select2({
+});
+
+      $(".myselect3").select2({
+});
+
+
+      $(".myselect4").select2({
+  
+});
+
 </script>
 
 </div>
