@@ -4,3 +4,4 @@ torchvision==0.1.8
 gunicorn
 flask
 tensorflow
+keras
