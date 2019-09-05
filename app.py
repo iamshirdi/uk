@@ -17,23 +17,23 @@ output='export.pkl'
 if 'export.pkl' not in os.listdir('path') :
     gdown.download(url,os.path.join('path',output),quiet=False)
 
-from torchvision import transforms
-t = transforms.Compose([
-# transforms.ToPILImage(),                 #[1]
- transforms.Resize(256),                    #[2]
- transforms.CenterCrop(224),                #[3]
- transforms.ToTensor(),                     #[4]
- transforms.Normalize(                      #[5]
- mean=[0.5, 0.5, 0.5],                #[6]
- std=[0.5, 0.5, 0.5] )                 #[7]
- ])
+# from torchvision import transforms
+# t = transforms.Compose([
+# # transforms.ToPILImage(),                 #[1]
+#  transforms.Resize(256),                    #[2]
+#  transforms.CenterCrop(224),                #[3]
+#  transforms.ToTensor(),                     #[4]
+#  transforms.Normalize(                      #[5]
+#  mean=[0.5, 0.5, 0.5],                #[6]
+#  std=[0.5, 0.5, 0.5] )                 #[7]
+#  ])
 
 
 path = Path("path")
 export_file_name = 'export.pkl'
 learn = load_learner(path, export_file_name)
 
-model2=torch.load('path/checkpoint.pth').cpu()
+# model2=torch.load('path/checkpoint.pth').cpu()
 
 # model3 = load_model('path/smart_price2.h5')
 model3 = keras.models.load_model('path/smart_price2.h5')
