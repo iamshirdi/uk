@@ -7,9 +7,15 @@ import tensorflow as tf
 from flask import Flask, redirect, url_for, request, render_template
 from PIL import Image
 import io
-
+import gdown
+import os
 
 app = Flask(__name__)
+
+url='https://drive.google.com/uc?export=download&id=1ss1LmKyfNOzSIKosfuyPJyXGF_4E5Pjo'
+output='export.pkl'
+if 'export.pkl' not in os.listdir('path') :
+    gdown.download(url,os.path.join('path',output),quiet=False)
 
 from torchvision import transforms
 t = transforms.Compose([
