@@ -1,7 +1,6 @@
 from fastai import *
 from fastai.vision import *
 import numpy as np
-from mapper import dict
 import keras
 import tensorflow as tf
 from flask import Flask, redirect, url_for, request, render_template
@@ -9,6 +8,7 @@ from PIL import Image
 import io
 import gdown
 import os
+import json
 
 app = Flask(__name__)
 
@@ -17,41 +17,28 @@ output='export.pkl'
 if 'export.pkl' not in os.listdir('path') :
     gdown.download(url,os.path.join('path',output),quiet=False)
 
-# from torchvision import transforms
-# t = transforms.Compose([
-# # transforms.ToPILImage(),                 #[1]
-#  transforms.Resize(256),                    #[2]
-#  transforms.CenterCrop(224),                #[3]
-#  transforms.ToTensor(),                     #[4]
-#  transforms.Normalize(                      #[5]
-#  mean=[0.5, 0.5, 0.5],                #[6]
-#  std=[0.5, 0.5, 0.5] )                 #[7]
-#  ])
+from torchvision import transforms
+t = transforms.Compose([
+ # transforms.ToPILImage(),                 #[1]
+ transforms.Resize(256),                    #[2]
+ transforms.CenterCrop(224),                #[3]
+ transforms.ToTensor(),                     #[4]
+ transforms.Normalize(                      #[5]
+ mean=[0.5, 0.5, 0.5],                #[6]
+ std=[0.5, 0.5, 0.5] )                 #[7]
+ ])
 
 
 path = Path("path")
 export_file_name = 'export.pkl'
 learn = load_learner(path, export_file_name)
 
-# model2=torch.load('path/checkpoint.pth').cpu()
-
-# model3 = load_model('path/smart_price2.h5')
-model3 = keras.models.load_model('path/smart_price2.h5')
-global graph,model
+model2=torch.load('path/checkpoint.pth')
+#.cpu
+global graph
 graph = tf.get_default_graph()
+model = keras.models.load_model('path/smart_price2.h5')
 
-def input_to_one_hot(data):
-    # initialize the target vector with zero values
-    dict2={}
-    dict2=dict
-    enc_input=[]
-    enc_input.append( 'category_'+data['category'])
-    enc_input.append( 'gender_'+data['gender'])
-    enc_input.append('brand_'+data['brand'])
-    enc_input.append('size_'+data['size'])
-    for e in enc_input:
-        dict2[e]=1
-    return dict2
 
 
 def cls(pred_class,outputs):
@@ -88,39 +75,46 @@ def upload():
 
 
 @app.route('/predict2', methods=['GET', 'POST'])
-def upload_file():
-        if request.method == 'POST':
-            f = request.files['image']
-            return render_template("success.html", name = f.filename)
+def predict2():
+    if request.method == 'POST':
+        filename2 = request.files['file2']
+        img2 = Image.open(filename2)
+        model2.eval()
+        outputs2=model2(t(img2).unsqueeze(0))
+        prob, predicted = torch.max(outputs2.data, 1)
 
-        # filename2 = request.files['file2']
-        # img2 = open_image(filename2)
-        # # model2.eval()
-        # outputs2=model2(t(img2).unsqueeze(0))
-        # prob, predicted = torch.max(outputs2.data, 1)
-        # print(predicted,prob)
-        # return predicted
-    # return Nones
+        return predicted
+    return None
 
 @app.route("/api", methods=["POST"])
 def api():
 
     result=request.form
-    category_label = result['category']
-    brand_label = result['brand']
-    gender_label = result['gender']
-    size_label = result['size']
-
-    user_input = {'category':category_label, 'brand':brand_label, 'gender':gender_label, 'size':size_label}
+    user_input = {'category':result['category'], 'brand':result['brand'], 'gender':result['gender'], 'size':result['size']}
 
     print(user_input)
-    d = input_to_one_hot(user_input)
-    testX=list(d.values())
+
+    with open('data_mapper.json', 'r') as f:
+        dict2 = json.load(f)
+
+    enc_input=[]
+    enc_input.append( 'category_'+user_input['category'])
+    enc_input.append( 'gender_'+user_input['gender'])
+    enc_input.append('brand_'+user_input['brand'])
+    enc_input.append('size_'+user_input['size'])
+    for e in enc_input:
+        dict2[e]=1
+
+    testX=list(dict2.values())
     a=np.array(testX)
+
+    image=np.reshape(a, (-1,819))
+
     with graph.as_default():
-        price_pred = model3.predict(np.reshape(a, (-1,819)))
-    price_pred = round(price_pred[0][0]*1999, 2)
-    return json.dumps({'price':price_pred});
+        price_pred =model.predict(image)
+    price_pred2 = round(price_pred[0][0]*1999,2)
+
+    return json.dumps({'price':price_pred2});
     # return render_template('result.html',prediction=price_pred)
 
 if __name__ == '__main__':

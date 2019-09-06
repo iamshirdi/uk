@@ -1,11 +1,4 @@
-#ignore the folder and its contents
-
 __pycache__/
-
-#ignore the folder and its contents
-.ipynb_checkpoints/
 path/export.pkl
 path/checkpoint.pth
-
-
-#.gitignore to even ignore this file in git
+.ipynb_checkpoints/

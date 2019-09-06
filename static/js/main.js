@@ -28,6 +28,7 @@ $(document).ready(function () {
         $('#result').hide();
         readURL(this);
     });
+
 	
 
 	$("#imageUpload2").change(function () {
