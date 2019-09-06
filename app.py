@@ -9,34 +9,42 @@ import io
 import gdown
 import os
 import json
+import torch
+from torchvision import datasets, utils, transforms, models
+from torch import nn
 
 app = Flask(__name__)
 
 url='https://drive.google.com/uc?export=download&id=1ss1LmKyfNOzSIKosfuyPJyXGF_4E5Pjo'
-# url2='https://drive.google.com/uc?export=download&id=1chhVMdsltP9GVrP-ZOr_Gh4JKGeLu2c7'
+url2='https://drive.google.com/uc?export=download&id=123sUYOgZcUYXnACFwUGliWO9i-ng8kF0'
 output='export.pkl'
 if 'export.pkl' not in os.listdir('path') :
     gdown.download(url,os.path.join('path',output),quiet=False)
-# if 'checkpoint.pth' not in os.listdir('path') :
-#     gdown.download(url2,os.path.join('path','checkpoint.pth'),quiet=False)
+if 'checkpoint.pth' not in os.listdir('path') :
+    gdown.download(url2,os.path.join('path','checkpoint.pth'),quiet=False)
 
-# from torchvision import transforms
-# t = transforms.Compose([
-#  # transforms.ToPILImage(),                 #[1]
-#  transforms.Resize(256),                    #[2]
-#  transforms.CenterCrop(224),                #[3]
-#  transforms.ToTensor(),                     #[4]
-#  transforms.Normalize(                      #[5]
-#  mean=[0.5, 0.5, 0.5],                #[6]
-#  std=[0.5, 0.5, 0.5] )                 #[7]
-#  ])
-#
+from torchvision import transforms
+t = transforms.Compose([
+ # transforms.ToPILImage(),                 #[1]
+ transforms.Resize(256),                    #[2]
+ transforms.CenterCrop(224),                #[3]
+ transforms.ToTensor(),                     #[4]
+ transforms.Normalize(                      #[5]
+ mean=[0.5, 0.5, 0.5],                #[6]
+ std=[0.5, 0.5, 0.5] )                 #[7]
+ ])
+
 
 path = Path("path")
 export_file_name = 'export.pkl'
 learn = load_learner(path, export_file_name)
 
-# model2=torch.load('path/checkpoint.pth')
+model2=models.resnet50()
+model2.fc=nn.Linear(2048, 144)
+model2.load_state_dict(torch.load(os.path.join('path','checkpoint.pth')), strict=False)
+model2.eval()
+
+
 #.cpu
 global graph
 graph = tf.get_default_graph()
@@ -81,12 +89,13 @@ def upload():
 def predict2():
     if request.method == 'POST':
         filename2 = request.files['file2']
-        # img2 = Image.open(filename2)
-        # model2.eval()
-        # outputs2=model2(t(img2).unsqueeze(0))
-        # prob, predicted = torch.max(outputs2.data, 1)
+        img = Image.open(filename2).convert('RGB')
+        outputs2=model2(t(img).unsqueeze(0))
+        _, predicted = torch.max(outputs2.data, 1)
+        print(predicted)
+        values, indices = outputs2.max(0)
 
-        return filename2.name
+        return str(predicted.numpy()[0])
     return None
 
 @app.route("/api", methods=["POST"])
