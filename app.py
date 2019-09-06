@@ -42,7 +42,13 @@ learn = load_learner(path, export_file_name)
 
 model2=models.resnet50()
 model2.fc=nn.Linear(2048, 144)
-model2.load_state_dict(torch.load(os.path.join('path','checkpoint.pth')), strict=False)
+if torch.cuda.is_available():
+    map_location=lambda storage, loc: storage.cuda()
+else:
+    map_location='cpu'
+
+checkpoint = torch.load('checkpoint.pth', map_location=map_location)
+model2.load_state_dict(checkpoint)
 model2.eval()
 
 
