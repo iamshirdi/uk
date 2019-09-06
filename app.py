@@ -47,7 +47,7 @@ if torch.cuda.is_available():
 else:
     map_location='cpu'
 
-checkpoint = torch.load('checkpoint.pth', map_location=map_location)
+checkpoint = torch.load(os.path.join('path','checkpoint.pth'), map_location=map_location)
 model2.load_state_dict(checkpoint)
 model2.eval()
 
