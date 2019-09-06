@@ -21,36 +21,13 @@ url2='https://drive.google.com/uc?export=download&id=123sUYOgZcUYXnACFwUGliWO9i-
 output='export.pkl'
 if 'export.pkl' not in os.listdir('path') :
     gdown.download(url,os.path.join('path',output),quiet=False)
-if 'checkpoint.pth' not in os.listdir('path') :
-    gdown.download(url2,os.path.join('path','checkpoint.pth'),quiet=False)
-
-t = transforms.Compose([
- # transforms.ToPILImage(),                 #[1]
- # transforms.Resize(256),                    #[2]
- # transforms.CenterCrop(224),                #[3]
- transforms.RandomSizedCrop(224),
- transforms.ToTensor(),                     #[4]
- transforms.Normalize(                      #[5]
- mean=[0.5, 0.5, 0.5],                #[6]
- std=[0.5, 0.5, 0.5] )                 #[7]
- ])
+# if 'checkpoint.pth' not in os.listdir('path') :
+#     gdown.download(url2,os.path.join('path','checkpoint.pth'),quiet=False)
 
 
 path = Path("path")
 export_file_name = 'export.pkl'
 learn = load_learner(path, export_file_name)
-
-model2=models.resnet50()
-model2.fc=nn.Linear(2048, 144)
-if torch.cuda.is_available():
-    map_location=lambda storage, loc: storage.cuda()
-else:
-    map_location='cpu'
-
-checkpoint = torch.load(os.path.join('path','checkpoint.pth'), map_location=map_location)
-model2.load_state_dict(checkpoint)
-model2.eval()
-
 
 #.cpu
 global graph
@@ -96,6 +73,32 @@ def upload():
 def predict2():
     if request.method == 'POST':
         filename2 = request.files['file2']
+
+        t = transforms.Compose([
+         # transforms.ToPILImage(),                 #[1]
+         # transforms.Resize(256),                    #[2]
+         # transforms.CenterCrop(224),                #[3]
+         transforms.RandomSizedCrop(224),
+         transforms.ToTensor(),                     #[4]
+         transforms.Normalize(                      #[5]
+         mean=[0.5, 0.5, 0.5],                #[6]
+         std=[0.5, 0.5, 0.5] )                 #[7]
+         ])
+
+
+         model2=models.resnet50()
+         model2.fc=nn.Linear(2048, 144)
+         if torch.cuda.is_available():
+             map_location=lambda storage, loc: storage.cuda()
+         else:
+             map_location='cpu'
+
+         checkpoint = torch.load(os.path.join('path','checkpoint.pth'), map_location=map_location)
+         model2.load_state_dict(checkpoint)
+         model2.eval()
+
+
+
         img = Image.open(filename2).convert('RGB')
         outputs2=model2(t(img).unsqueeze(0))
         _, predicted = torch.max(outputs2.data, 1)

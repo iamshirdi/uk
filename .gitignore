@@ -12,5 +12,5 @@
 #ignore the folder and its contents
 __pycache__/
 path/export.pkl
-path/checkpoint.pth
+
 .ipynb_checkpoints/
