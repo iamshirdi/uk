@@ -12,6 +12,7 @@ import json
 import torch
 from torchvision import datasets, utils, transforms, models
 from torch import nn
+from torchvision import transforms
 
 app = Flask(__name__)
 
@@ -23,11 +24,11 @@ if 'export.pkl' not in os.listdir('path') :
 if 'checkpoint.pth' not in os.listdir('path') :
     gdown.download(url2,os.path.join('path','checkpoint.pth'),quiet=False)
 
-from torchvision import transforms
 t = transforms.Compose([
  # transforms.ToPILImage(),                 #[1]
- transforms.Resize(256),                    #[2]
- transforms.CenterCrop(224),                #[3]
+ # transforms.Resize(256),                    #[2]
+ # transforms.CenterCrop(224),                #[3]
+ transforms.RandomSizedCrop(224),
  transforms.ToTensor(),                     #[4]
  transforms.Normalize(                      #[5]
  mean=[0.5, 0.5, 0.5],                #[6]
