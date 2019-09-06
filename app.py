@@ -13,9 +13,12 @@ import json
 app = Flask(__name__)
 
 url='https://drive.google.com/uc?export=download&id=1ss1LmKyfNOzSIKosfuyPJyXGF_4E5Pjo'
+url2=''
 output='export.pkl'
 if 'export.pkl' not in os.listdir('path') :
     gdown.download(url,os.path.join('path',output),quiet=False)
+if 'checkpoint.pth' not in os.listdir('path') :
+    gdown.download(url2,os.path.join('path','checkpoint.pth'),quiet=False)
 
 from torchvision import transforms
 t = transforms.Compose([
